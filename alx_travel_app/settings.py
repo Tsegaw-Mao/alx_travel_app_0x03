@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_yasg',
     'alx_travel_app.listings',
+    "django_celery_results",
 ]
 
 MIDDLEWARE = [
@@ -143,4 +144,19 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CELERY_BROKER_URL = 'amqp://localhost'
+
+# Celery Config
+CELERY_BROKER_URL = "amqp://guest:guest@localhost:5672//"  # RabbitMQ
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+
+# Email Config (for testing with console backend)
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "tsegawjohnj@gmail.com"
+EMAIL_HOST_PASSWORD = ""

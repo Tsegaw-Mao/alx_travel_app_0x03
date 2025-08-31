@@ -80,3 +80,16 @@ def verify_payment(request):
             return Response({"message": "Payment failed", "status": payment.status})
     else:
         return Response({"error": "Verification failed"}, status=status.HTTP_400_BAD_REQUEST)
+from rest_framework import viewsets
+from .models import Booking
+from .serializers import BookingSerializer
+from .tasks import send_booking_confirmation
+
+class BookingViewSet(viewsets.ModelViewSet):
+    queryset = Booking.objects.all()
+    serializer_class = BookingSerializer
+
+    def perform_create(self, serializer):
+        booking = serializer.save()
+        # trigger async email task
+        send_booking_confirmation.delay(booking.customer.email, booking.id)
